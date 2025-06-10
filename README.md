@@ -58,6 +58,8 @@
 
 https://casibase.org
 
+- [ACI integration guide](docs/aci-integration.md)
+
 ## Architecture
 
 Casibase contains 2 parts:
