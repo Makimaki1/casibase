@@ -143,6 +143,9 @@ func initAPI() {
 	beego.Router("/api/add-node", &controllers.ApiController{}, "POST:AddNode")
 	beego.Router("/api/delete-node", &controllers.ApiController{}, "POST:DeleteNode")
 
+	beego.Router("/api/get-tag-links", &controllers.ApiController{}, "GET:GetTagLinks")
+	beego.Router("/api/add-tag-link", &controllers.ApiController{}, "POST:AddTagLink")
+
 	beego.Router("/api/get-machines", &controllers.ApiController{}, "GET:GetMachines")
 	beego.Router("/api/get-machine", &controllers.ApiController{}, "GET:GetMachine")
 	beego.Router("/api/update-machine", &controllers.ApiController{}, "POST:UpdateMachine")
