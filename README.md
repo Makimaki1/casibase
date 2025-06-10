@@ -120,6 +120,10 @@ Casibase contains 2 parts:
 
 <https://casibase.org/docs/basic/server-installation>
 
+## Tag Links
+
+Tags inside Casibase can link to external resources such as GitHub issues or community forum threads. Use tags to quickly navigate to related learning materials.
+
 ## How to contact?
 
 Discord: <https://discord.gg/5rPsrAzK7S>
