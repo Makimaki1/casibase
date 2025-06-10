@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/context"
+	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
@@ -146,7 +147,7 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 
 	err := ctx.Output.JSON(resp, true, false)
 	if err != nil {
-		panic(err)
+		logs.Error(fmt.Sprintf("responseError JSON output failed: %v", err))
 	}
 }
 
