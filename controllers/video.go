@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/beego/beego"
+	"github.com/beego/beego/logs"
 	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/audio"
 	"github.com/casibase/casibase/object"
@@ -239,13 +240,14 @@ func updateVideoCoverUrl(id string, videoId string) error {
 func startCoverUrlJob(id string, videoId string) {
 	err := object.SetDefaultVodClient()
 	if err != nil {
-		panic(err)
+		logs.Error(fmt.Sprintf("SetDefaultVodClient error: %v", err))
+		return
 	}
 
 	go func(id string, videoId string) {
 		err = updateVideoCoverUrl(id, videoId)
 		if err != nil {
-			panic(err)
+			logs.Error(fmt.Sprintf("updateVideoCoverUrl error: %v", err))
 		}
 	}(id, videoId)
 }

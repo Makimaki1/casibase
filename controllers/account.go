@@ -20,16 +20,22 @@ import (
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
 
+var authInitErr error
+
 func init() {
-	InitAuthConfig()
+	authInitErr = InitAuthConfig()
+	if authInitErr != nil {
+		logs.Error(fmt.Sprintf("InitAuthConfig failed: %v", authInitErr))
+	}
 }
 
-func InitAuthConfig() {
+func InitAuthConfig() error {
 	casdoorEndpoint := beego.AppConfig.String("casdoorEndpoint")
 	clientId := beego.AppConfig.String("clientId")
 	clientSecret := beego.AppConfig.String("clientSecret")
@@ -39,21 +45,22 @@ func InitAuthConfig() {
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if application == nil {
-		panic(fmt.Errorf("The application: %s does not exist", casdoorApplication))
+		return fmt.Errorf("The application: %s does not exist", casdoorApplication)
 	}
 
 	cert, err := casdoorsdk.GetCert(application.Cert)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if cert == nil {
-		panic(fmt.Errorf("The cert: %s does not exist", application.Cert))
+		return fmt.Errorf("The cert: %s does not exist", application.Cert)
 	}
 
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
+	return nil
 }
 
 // Signin
@@ -65,6 +72,11 @@ func InitAuthConfig() {
 // @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
 // @router /signin [post]
 func (c *ApiController) Signin() {
+	if authInitErr != nil {
+		logs.Error(fmt.Sprintf("Signin failed: %v", authInitErr))
+		c.ResponseError(authInitErr.Error())
+		return
+	}
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 

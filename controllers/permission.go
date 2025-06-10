@@ -68,7 +68,8 @@ func (c *ApiController) UpdatePermission() {
 	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
 	success, err := casdoorsdk.UpdatePermission(&permission)

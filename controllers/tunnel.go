@@ -246,7 +246,8 @@ func (c *ApiController) TunnelMonitor() {
 	tunnel, err := guacamole.NewTunnel(addr, configuration)
 	if err != nil {
 		guacamole.Disconnect(ws, NewTunnelError, err.Error())
-		panic(err)
+		logs.Error(fmt.Sprintf("NewTunnel error: %v", err))
+		return
 	}
 
 	guacSession := &guacamole.Session{
