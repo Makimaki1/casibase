@@ -132,9 +132,8 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 		}
 		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf("exceed max tokens")
 		}
+		return nil, fmt.Errorf("exceed max tokens")
 	}
 
 	resp, err := client.InvokeModel(context.TODO(), &bedrockruntime.InvokeModelInput{
@@ -145,11 +144,16 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var result struct {
 		Generation string `json:"generation"`
 	}
-	if err := json.Unmarshal(resp.Body, &result); err != nil {
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(bodyBytes, &result); err != nil {
 		return nil, err
 	}
 
